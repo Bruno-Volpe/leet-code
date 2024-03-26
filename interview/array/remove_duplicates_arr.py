@@ -1,19 +1,20 @@
 class Solution:
-    def is_twice(self, nums: List[int], num) -> int:
-        elements = []
-        
-        for el in nums:
-            if el == num:
-                elements.append(el)
-        
-        return len(elements) == 2
-    
     def removeDuplicates(self, nums: List[int]) -> int:
-        elements = []
+        # Se a lista tem menos de 3 elementos, não há como ter 3 duplicatas
+        if len(nums) < 3:
+            return len(nums)
         
-        for el in nums:
-            if not self.is_twice(elements, el):
-                elements.append(el)      
-               
-        nums = [1] 
-        return len(elements)
+        # Inicializa o ponteiro 'slow' em 2, pois os dois primeiros elementos não podem ser duplicatas
+        slow = 2
+
+        # Itera sobre a lista a partir do terceiro elemento
+        for fast in range(2, len(nums)):
+            # Se o elemento atual (fast) é diferente dos dois anteriores
+            if nums[fast] != nums[slow - 2]:
+                # Move o elemento atual para a posição do ponteiro 'slow'
+                nums[slow] = nums[fast]
+                # Avança o ponteiro 'slow'
+                slow += 1
+                
+        # Retorna a posição do ponteiro 'slow', que é a quantidade de elementos sem duplicatas
+        return slow
