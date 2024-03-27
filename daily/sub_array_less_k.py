@@ -1,25 +1,18 @@
 class Solution:
-    def find_all_subsequences(self, nums: List[int]) -> List[List[int]]:
-        subsequences = []
-        for i in range(len(nums)):
-            subsequences.append([nums[i]])
-            for j in range(i + 1, len(nums)):
-                subsequences.append(nums[i:j + 1])
-        return subsequences
-    
     def numSubarrayProductLessThanK(self, nums: List[int], k: int) -> int:
-        nums.sort()
+        if k <= 1:  # If k <= 1, no subarray can satisfy the condition
+            return 0
         
-        mult = 1
+        count = 0
+        prod = 1  # Product of elements in the current window
+        left = 0   # Left pointer of the window
         
-        sub_arrays = []
-        all_sub_arrays = self.find_all_subsequences(nums)
+        for right, num in enumerate(nums):
+            prod *= num  # Expand the window by multiplying the current number
+            while prod >= k:  # Shrink the window from the left until the product is less than k
+                prod /= nums[left]
+                left += 1
+            count += right - left + 1  # Add the number of valid subarrays ending at the current position
         
-        for sub_array in all_sub_arrays:
-            for num in sub_array:
-                mult *= num
-            if mult < k:
-                sub_arrays.append(sub_array)
-            mult = 1
-
-        return len(sub_arrays)
+        return count
+        
