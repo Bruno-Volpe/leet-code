@@ -1,26 +1,22 @@
+from collections import defaultdict
+
 class Solution:
     def subarraysWithKDistinct(self, nums: List[int], k: int) -> int:
-        # Sliding window 3 pointers
+        count = defaultdict(int)
+        res = 0
         left_far = 0
-        left_close = 0
-        k = 0
-        
-        hash_map = defaultdict(int)
-        
+        left_near = 0
         for right in range(len(nums)):
-            hash_map[nums[right]] += 1
-            
-            while len(hash_map) > k:
-                hash_map[nums[left_close]] -= 1
-                if hash_map[nums[left_close]] == 0:
-                    hash_map.pop(nums[left_close])
-                left_close += 1
-                left_far = left_close
-
-            while hash_map[nums[left_close]] > 1:
-                hash_map[nums[left_close]] -= 1
-                left_close += 1
-            
-            if len(hash_map) == k:
-                k += left_close - left_far + 1
-        return k
+            count[nums[right]] += 1
+            while len(count) > k:
+                count[nums[left_near]] -= 1
+                if count[nums[left_near]] == 0:
+                    count.pop(nums[left_near])
+                left_near += 1
+                left_far = left_near
+            while len(count) > 0 and count[nums[left_near]] > 1:
+                count[nums[left_near]] -= 1
+                left_near += 1
+            if len(count) == k:
+                res += left_near - left_far + 1
+        return res
