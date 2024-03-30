@@ -1,23 +1,21 @@
 from typing import List
 class Solution:
     def countSubarrays(self, nums: List[int], k: int) -> int:
-        hash_map = {}
-        sub_arrays = []
+        max_n, max_cnt = max(nums), 0
         
-        for i, num in enumerate(nums):
-            if num in hash_map:
-                hash_map[num] += 1
-            else:
-                hash_map[num] = 1
-                
-                
-        aux_arr = []
-        for i in range(len(nums)):
-            if hash_map[nums[i]] >= k:
-                aux_arr.append(nums[i])
-            else:
-                if aux_arr:
-                    sub_arrays.append(aux_arr)
-                    aux_arr = []    
+        l = 0
+        
+        res = 0
+        
+        for r in range(len(nums)):
+            if nums[r] == max_n:
+                max_cnt += 1
+            
+            while max_cnt == k:
+                if nums[l] == max_n:
+                    max_cnt -= 1
+                l += 1
 
-        return len(sub_arrays)
+            res += l
+            
+        return res
