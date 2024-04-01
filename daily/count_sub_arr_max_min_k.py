@@ -2,19 +2,29 @@ from typing import List
 
 class Solution:
     def countSubarrays(self, nums: List[int], minK: int, maxK: int) -> int:
-        left = 0
-        subarrays = 0
+        bad = mi = ma = -1
         
-        for right in range(len(nums)):
-            if nums[right] >= minK and nums[right] <= maxK:
-                subarrays += right - left + 1
-            else:
-                left = right + 1
-                    
-        return subarrays
+        res = 0
+        
+        for i, n in enumerate(nums):
+            if not minK <= n <= maxK:
+                bad = i
+                
+            if minK == n:
+                mi = i
+                
+            if maxK == n:
+                ma = i
+                
+            start = min(mi, ma)
+            
+            if start > bad:
+                res += start - bad
+            
+        return res
 
 
-# O(n^2) - nao passa no teste de performance
+#O(n^2) - nao passa no teste de performance
 # class Solution:
 #     def countSubarrays(self, nums: List[int], minK: int, maxK: int) -> int:
 #         subarrays = 0
