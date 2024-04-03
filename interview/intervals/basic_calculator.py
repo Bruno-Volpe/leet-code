@@ -1,37 +1,42 @@
 class Solution:
     def calculate(self, s: str) -> int:
-        s = s.replace(" ", "")
+        s = list(s.replace(" ", ""))
         
-        # Função para avaliar expressões dentro de parênteses
-        def evaluate_expression(expression):
-            total = 0
-            operand = 0
-            sign = 1
-            i = 0
-            while i < len(expression):
-                char = expression[i]
-                if char.isdigit():
-                    operand = operand * 10 + int(char)
-                elif char == "+":
-                    total += sign * operand
-                    operand = 0
-                    sign = 1
-                elif char == "-":
-                    total += sign * operand
-                    operand = 0
-                    sign = -1
-                elif char == "(":
-                    j = i + 1
-                    count = 1
-                    while count != 0:
-                        if expression[j] == "(":
-                            count += 1
-                        elif expression[j] == ")":
-                            count -= 1
-                        j += 1
-                    operand = evaluate_expression(expression[i+1:j-1])
-                    i = j - 1
-                i += 1
-            return total + sign * operand
+        # Retirar possiveis parenteses e criar expressoes em uma []        
+        def remove_parentheses(s):
+            expressions = []
+            stack = []
+            for i in range(len(s)):
+                if s[i] == "(":
+                    stack.append(i)
+                elif s[i] == ")":
+                    start = stack.pop()
+                    expressions.append(s[start + 1:i])
+            if len(expressions) == 0:
+                return [s]
+            else:
+                return expressions
+
+        list_expressions = remove_parentheses(s)
         
-        return evaluate_expression(s)
+        for expression in list_expressions:
+            if "(" in expression:
+                continue
+            
+            # Loop para resolver somas e subtrações
+            while "+" in expression or "-" in expression:
+                for i in range(len(expression)):
+                    if expression[i] == "+":
+                        expression[i] = int(expression[i-1]) + int(expression[i+1])
+                        expression.pop(i-1)
+                        expression.pop(i)
+                        break
+                    elif expression[i] == "-":
+                        expression[i] = int(expression[i-1]) - int(expression[i+1])
+                        expression.pop(i-1)
+                        expression.pop(i)
+                        break
+                    else:
+                        continue
+
+        return expression[0]
